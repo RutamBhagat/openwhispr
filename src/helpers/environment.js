@@ -19,6 +19,7 @@ const PERSISTED_KEYS = [
   "DICTATION_KEY",
   "ACTIVATION_MODE",
   "FLOATING_ICON_AUTO_HIDE",
+  "CLOSE_TO_TRAY",
 ];
 
 class EnvironmentManager {
@@ -144,6 +145,16 @@ class EnvironmentManager {
 
   saveFloatingIconAutoHide(enabled) {
     const result = this._saveKey("FLOATING_ICON_AUTO_HIDE", String(enabled));
+    this.saveAllKeysToEnvFile().catch(() => {});
+    return result;
+  }
+
+  getCloseToTray() {
+    return this._getKey("CLOSE_TO_TRAY") === "true";
+  }
+
+  saveCloseToTray(enabled) {
+    const result = this._saveKey("CLOSE_TO_TRAY", String(enabled));
     this.saveAllKeysToEnvFile().catch(() => {});
     return result;
   }

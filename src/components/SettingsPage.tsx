@@ -645,6 +645,8 @@ export default function SettingsPage({ activeSection = "general" }: SettingsPage
     setAudioCuesEnabled,
     floatingIconAutoHide,
     setFloatingIconAutoHide,
+    closeToTray,
+    setCloseToTray,
     cloudBackupEnabled,
     setCloudBackupEnabled,
     telemetryEnabled,
@@ -1460,6 +1462,16 @@ export default function SettingsPage({ activeSection = "general" }: SettingsPage
                       />
                     </SettingsRow>
                   </SettingsPanelRow>
+                  {(platform === "darwin" || platform === "win32") && (
+                    <SettingsPanelRow>
+                      <SettingsRow
+                        label="Run in tray when window is closed"
+                        description="Closing the control panel hides it and keeps dictation running in the background"
+                      >
+                        <Toggle checked={closeToTray} onChange={setCloseToTray} />
+                      </SettingsRow>
+                    </SettingsPanelRow>
+                  )}
                 </SettingsPanel>
               </div>
             )}

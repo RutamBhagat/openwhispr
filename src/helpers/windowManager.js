@@ -25,6 +25,7 @@ class WindowManager {
     this.macCompoundPushState = null;
     this._cachedActivationMode = "tap";
     this._floatingIconAutoHide = false;
+    this._closeToTray = false;
 
     app.on("before-quit", () => {
       this.isQuitting = true;
@@ -365,6 +366,14 @@ class WindowManager {
     this._floatingIconAutoHide = Boolean(enabled);
   }
 
+  getCloseToTray() {
+    return this._closeToTray;
+  }
+
+  setCloseToTray(enabled) {
+    this._closeToTray = Boolean(enabled);
+  }
+
   setHotkeyListeningMode(enabled) {
     this.hotkeyManager.setListeningMode(enabled);
   }
@@ -467,13 +476,20 @@ class WindowManager {
     });
 
     this.controlPanelWindow.on("close", (event) => {
-      if (!this.isQuitting) {
-        event.preventDefault();
-        if (process.platform === "darwin") {
-          this.hideControlPanelToTray();
-        } else {
-          this.controlPanelWindow.minimize();
-        }
+      if (this.isQuitting) {
+        return;
+      }
+
+      const supportsCloseToTray = process.platform === "darwin" || process.platform === "win32";
+      if (!supportsCloseToTray || !this.getCloseToTray()) {
+        return;
+      }
+
+      event.preventDefault();
+      if (process.platform === "darwin") {
+        this.hideControlPanelToTray();
+      } else if (process.platform === "win32") {
+        this.controlPanelWindow.hide();
       }
     });
 

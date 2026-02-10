@@ -437,6 +437,7 @@ async function startApp() {
 
   windowManager.setActivationModeCache(environmentManager.getActivationMode());
   windowManager.setFloatingIconAutoHide(environmentManager.getFloatingIconAutoHide());
+  windowManager.setCloseToTray(environmentManager.getCloseToTray());
 
   ipcMain.on("activation-mode-changed", (_event, mode) => {
     windowManager.setActivationModeCache(mode);
@@ -450,6 +451,11 @@ async function startApp() {
     if (windowManager.mainWindow && !windowManager.mainWindow.isDestroyed()) {
       windowManager.mainWindow.webContents.send("floating-icon-auto-hide-changed", enabled);
     }
+  });
+
+  ipcMain.on("close-to-tray-changed", (_event, enabled) => {
+    windowManager.setCloseToTray(enabled);
+    environmentManager.saveCloseToTray(enabled);
   });
 
   if (process.platform === "darwin") {

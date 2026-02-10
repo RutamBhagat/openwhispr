@@ -209,6 +209,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Activation mode persistence (file-based for reliable startup)
   getActivationMode: () => ipcRenderer.invoke("get-activation-mode"),
   saveActivationMode: (mode) => ipcRenderer.invoke("save-activation-mode", mode),
+  getCloseToTray: () => ipcRenderer.invoke("get-close-to-tray"),
+  saveCloseToTray: (enabled) => ipcRenderer.invoke("save-close-to-tray", enabled),
 
   saveAllKeysToEnv: () => ipcRenderer.invoke("save-all-keys-to-env"),
   syncStartupPreferences: (prefs) => ipcRenderer.invoke("sync-startup-preferences", prefs),
@@ -299,6 +301,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
   // Notify main process of activation mode changes (for Windows Push-to-Talk)
   notifyActivationModeChanged: (mode) => ipcRenderer.send("activation-mode-changed", mode),
+  notifyCloseToTrayChanged: (enabled) => ipcRenderer.send("close-to-tray-changed", enabled),
   notifyHotkeyChanged: (hotkey) => ipcRenderer.send("hotkey-changed", hotkey),
 
   // Floating icon auto-hide

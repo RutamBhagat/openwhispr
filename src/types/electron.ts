@@ -375,6 +375,8 @@ declare global {
       // Activation mode persistence (file-based for reliable startup)
       getActivationMode?: () => Promise<"tap" | "push">;
       saveActivationMode?: (mode: "tap" | "push") => Promise<void>;
+      getCloseToTray?: () => Promise<boolean>;
+      saveCloseToTray?: (enabled: boolean) => Promise<{ success: boolean }>;
 
       // Debug logging
       getLogLevel?: () => Promise<string>;
@@ -411,6 +413,7 @@ declare global {
 
       // Windows Push-to-Talk notifications
       notifyActivationModeChanged?: (mode: "tap" | "push") => void;
+      notifyCloseToTrayChanged?: (enabled: boolean) => void;
       notifyHotkeyChanged?: (hotkey: string) => void;
       notifyFloatingIconAutoHideChanged?: (enabled: boolean) => void;
       onFloatingIconAutoHideChanged?: (callback: (enabled: boolean) => void) => () => void;

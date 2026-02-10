@@ -557,6 +557,38 @@ function useSettingsInternal() {
     [setFloatingIconAutoHideLocal]
   );
 
+  const [closeToTray, setCloseToTrayLocal] = useLocalStorage("closeToTray", false, {
+    serialize: String,
+    deserialize: (value) => value === "true",
+  });
+
+  const setCloseToTray = useCallback(
+    (enabled: boolean) => {
+      setCloseToTrayLocal(enabled);
+      if (typeof window !== "undefined" && window.electronAPI?.notifyCloseToTrayChanged) {
+        window.electronAPI.notifyCloseToTrayChanged(enabled);
+      }
+    },
+    [setCloseToTrayLocal]
+  );
+
+  // Sync close-to-tray from main process on first mount (handles localStorage cleared)
+  const hasRunCloseToTraySync = useRef(false);
+  useEffect(() => {
+    if (hasRunCloseToTraySync.current) return;
+    hasRunCloseToTraySync.current = true;
+
+    const sync = async () => {
+      if (!window.electronAPI?.getCloseToTray) return;
+      const envEnabled = await window.electronAPI.getCloseToTray();
+      if (envEnabled !== closeToTray) {
+        setCloseToTrayLocal(envEnabled);
+      }
+    };
+    sync().catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Microphone settings
   const [preferBuiltInMic, setPreferBuiltInMic] = useLocalStorage("preferBuiltInMic", true, {
     serialize: String,
@@ -732,6 +764,8 @@ function useSettingsInternal() {
     setAudioCuesEnabled,
     floatingIconAutoHide,
     setFloatingIconAutoHide,
+    closeToTray,
+    setCloseToTray,
     preferBuiltInMic,
     selectedMicDeviceId,
     setPreferBuiltInMic,

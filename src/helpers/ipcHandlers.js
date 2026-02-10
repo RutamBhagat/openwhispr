@@ -777,6 +777,14 @@ class IPCHandlers {
       return this.environmentManager.saveActivationMode(mode);
     });
 
+    ipcMain.handle("get-close-to-tray", async () => {
+      return this.environmentManager.getCloseToTray();
+    });
+
+    ipcMain.handle("save-close-to-tray", async (event, enabled) => {
+      return this.environmentManager.saveCloseToTray(enabled);
+    });
+
     ipcMain.handle("save-anthropic-key", async (event, key) => {
       return this.environmentManager.saveAnthropicKey(key);
     });
